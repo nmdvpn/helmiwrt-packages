@@ -29,7 +29,7 @@ git clone --depth=1 https://github.com/vernesong/OpenClash
 # Add modeminfo
 #svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo luci-app-modeminfo
 #gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo
-git clone --depth=1 https://github.com/koshev-msk/modemfeed
+#git clone --depth=1 https://github.com/koshev-msk/modemfeed
 
 #svn co https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo modeminfo
 #gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo
