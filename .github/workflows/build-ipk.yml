@@ -53,7 +53,7 @@ on:
         type: choice
         description: Select device platform.
         required: true
-        default: bcm27xx/bcm2711
+        default: x86/64
         options: 
         - armvirt/32
         - armvirt/64
