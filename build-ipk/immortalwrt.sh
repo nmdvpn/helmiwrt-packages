@@ -12,25 +12,33 @@ pushd package
 # Add Argon theme configuration
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
 
+pip install github-dlr
+
 # Add official OpenClash dev branch source
 # git clone --depth=1 -b dev https://github.com/vernesong/OpenClash
-svn co https://github.com/vernesong/OpenClash/tree/dev/luci-app-openclash luci-app-openclash
+#svn co https://github.com/vernesong/OpenClash/tree/dev/luci-app-openclash luci-app-openclash
+gh-dlr https://github.com/vernesong/OpenClash/tree/dev/luci-app-openclash
 
 # Add modeminfo
-svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo luci-app-modeminfo
-svn co https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo modeminfo
+#svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo luci-app-modeminfo
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo
+#svn co https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo modeminfo
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo
 # Remove modeminfo telegrambot plugin
 [[ -f modeminfo/Makefile ]] && sed -i -e '/Package\/\$(PKG_NAME)-telegram\/install/,+4d' -e '/Package\/\$(PKG_NAME)-telegram/,+6d' -e '/\$(eval \$(call BuildPackage,\$(PKG_NAME)-telegram))/,+0d' modeminfo/Makefile
 [[ -f modeminfo/root/usr/lib/telegrambot/plugins/modeminfo.sh ]] && rm -f modeminfo/root/usr/lib/telegrambot/plugins/modeminfo.sh
 
 # Add luci-app-smstools3
-svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-smstools3 luci-app-smstools3
+#svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-smstools3 luci-app-smstools3
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-smstools3
 
 # Add luci-app-mmconfig : configure modem cellular bands via mmcli utility
-svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-mmconfig luci-app-mmconfig
+#svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-mmconfig luci-app-mmconfig
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-mmconfig
 
 # Add support for Fibocom L860-GL l850/l860 ncm
-svn co https://github.com/koshev-msk/modemfeed/tree/master/packages/net/xmm-modem xmm-modem
+#svn co https://github.com/koshev-msk/modemfeed/tree/master/packages/net/xmm-modem xmm-modem
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/packages/net/xmm-modem
 
 if [[ $REPO_BRANCH == *"21."* ]] || [[ $REPO_BRANCH == *"22."* ]] || [[ $REPO_BRANCH == *"23."* ]]; then
 	echo "21.02 branch detected! Adding 21.02 repos..."
@@ -64,8 +72,10 @@ git clone --depth=1 https://github.com/4IceG/luci-app-atinout-mod
 git clone --depth=1 https://github.com/helmiau/helmiwrt-packages
 rm -rf helmiwrt-packages/luci-app-v2raya
 # telegrambot
-svn co https://github.com/helmiau/helmiwrt-adds/tree/main/packages/net/telegrambot helmiwrt-adds/telegrambot
-svn co https://github.com/helmiau/helmiwrt-adds/tree/main/luci/luci-app-telegrambot helmiwrt-adds/luci-app-telegrambot
+#svn co https://github.com/helmiau/helmiwrt-adds/tree/main/packages/net/telegrambot helmiwrt-adds/telegrambot
+gh-dlr https://github.com/helmiau/helmiwrt-adds/tree/main/packages/net/telegrambot
+#svn co https://github.com/helmiau/helmiwrt-adds/tree/main/luci/luci-app-telegrambot helmiwrt-adds/luci-app-telegrambot
+gh-dlr https://github.com/helmiau/helmiwrt-adds/tree/main/luci/luci-app-telegrambot
 
 # Add LuCI v2rayA
 if [[ $REPO_BRANCH == *"21.02"* ]]; then
