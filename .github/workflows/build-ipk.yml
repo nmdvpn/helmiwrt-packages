@@ -173,7 +173,7 @@ jobs:
           echo "src-git-full packages https://github.com/openwrt/packages.git;openwrt-23.05" >> feeds.conf
           echo "src-git-full luci https://git.openwrt.org/project/luci.git;openwrt-23.05" >> feeds.conf
           echo "src-git-full routing https://git.openwrt.org/feed/routing.git;openwrt-23.05"  >> feeds.conf
-          git clone -b master https://github.com/${{ github.repository }}.git package/downloads/luci-app-ipinfo
+          echo "src-git modemfeed https://github.com/koshev-msk/modemfeed.git"  >> feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           echo "status=success" >> $GITHUB_OUTPUT
