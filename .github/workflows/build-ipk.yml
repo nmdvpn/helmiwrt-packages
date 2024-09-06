@@ -100,9 +100,9 @@ jobs:
           
           # Determine the target system (Imagebuilder files naming has changed since 23.05.0)
           if [[ "${REPO_BRANCH:0:2}" -ge "23" && "${REPO_BRANCH:3:2}" -ge "05" ]]; then
-              export REPO_SDK=$(echo "https://downloads.${SOURCE_WRT}.org/${BRANCH_REL}/targets/${PLATFORM}/openwrt-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-12.3.0_musl.Linux-x86_64.tar.xz")
+              export REPO_SDK=$(echo "https://downloads.${SOURCE_WRT}.org/${BRANCH_REL}/targets/${PLATFORM}/${SOURCE_WRT}-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-12.3.0_musl.Linux-x86_64.tar.xz")
           else
-              export REPO_SDK=$(echo "https://downloads.${SOURCE_WRT}.org/${BRANCH_REL}/targets/${PLATFORM}/openwrt-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-11.2.0_musl.Linux-x86_64.tar.xz")
+              export REPO_SDK=$(echo "https://downloads.${SOURCE_WRT}.org/${BRANCH_REL}/targets/${PLATFORM}/${SOURCE_WRT}-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-11.2.0_musl.Linux-x86_64.tar.xz")
           fi
     
           echo "REPO_SDK=${REPO_SDK}" >> $GITHUB_ENV
