@@ -137,10 +137,6 @@ jobs:
         if: steps.load_cfg.outputs.status == 'success' && !cancelled()
         run: |
           cd $OPENWRT_ROOT_PATH
-          echo "src-git base https://github.com/openwrt/openwrt.git;openwrt-23.05" > feeds.conf
-          echo "src-git-full packages https://github.com/openwrt/packages.git;openwrt-23.05" >> feeds.conf
-          echo "src-git-full luci https://git.openwrt.org/project/luci.git;openwrt-23.05" >> feeds.conf
-          echo "src-git-full routing https://git.openwrt.org/feed/routing.git;openwrt-23.05"  >> feeds.conf
           echo "src-git modemfeed https://github.com/koshev-msk/modemfeed.git"  >> feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
