@@ -11,44 +11,23 @@ name: Build IPK
 on:
   workflow_dispatch:
     inputs:
+      source:
+        type: choice
+        description: Select Source.
+        required: true
+        default: openwrt
+        options:
+        - openwrt
+        - immortalwrt
       branch:
         type: choice
         description: Select OpenWrt Branch.
         required: true
         default: 23.05.4
         options:  
-        - 18.06.0
-        - 18.06.0-rc1
-        - 18.06.0-rc2
-        - 18.06.1
-        - 18.06.2
-        - 18.06.3
-        - 18.06.4
-        - 18.06.5
-        - 18.06.6
-        - 18.06.7
-        - 18.06.8
-        - 18.06.9
-        - 21.02.0
-        - 21.02.0-rc1
-        - 21.02.0-rc2
-        - 21.02.0-rc3
-        - 21.02.0-rc4
-        - 21.02.1
-        - 21.02.2
-        - 21.02.3
-        - 21.02.4
-        - 21.02.5
-        - 22.03.0
-        - 22.03.0-rc1
-        - 22.03.0-rc4
-        - 22.03.0-rc5
-        - 22.03.0-rc6
-        - 22.03.1
-        - 22.03.2
+        - 21.02.7
         - 22.03.3
         - 23.05.4
-        - snapshot
       platform:
         type: choice
         description: Select device platform.
@@ -62,31 +41,21 @@ on:
         - bcm27xx/bcm2709
         - bcm27xx/bcm2710
         - bcm27xx/bcm2711
-#        - ramips/mt7620
-#        - ramips/mt7621
-#        - ramips/mt76x8
-#        - ramips/rt288x
-#        - ramips/rt305x
-#        - ramips/rt3883
         - rockchip/armv8
         - sunxi/cortexa53
         - sunxi/cortexa7
-#        - sunxi/cortexa8
         - x86/64
         - x86/generic
-#        - x86/geode
-#        - x86/legacy
 
 env:
   CONFIG_FILE: build-ipk/universal.config
   UPLOAD_RELEASE: true
   TZ: Asia/Jakarta
-  REPO_URL: https://github.com/immortalwrt/immortalwrt
   DIY_SH: build-ipk/immortalwrt.sh
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -96,7 +65,7 @@ jobs:
         run: |
           echo "Install packages"
           sudo -E apt-get -qq update
-          sudo -E apt-get -qq install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-distutils rsync unzip zlib1g-dev file wget
+          sudo -E apt-get -qq install ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
           sudo -E apt-get -qq autoremove --purge
           sudo -E apt-get -qq clean
 
@@ -109,17 +78,15 @@ jobs:
           sudo chown $USER:$GROUPS /workdir
           export FILE_DATE=$(date +"%Y.%m.%d")
           echo "FILE_DATE=$FILE_DATE" >> $GITHUB_ENV
+          export SOURCE_WRT=$(echo "${{ github.event.inputs.source }}")
+          echo "SOURCE_WRT=$SOURCE_WRT" >> $GITHUB_ENV
           export REPO_BRANCH=$(echo "${{ github.event.inputs.branch }}")
           echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
           export PLATFORM=$(echo "${{ github.event.inputs.platform }}")
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
           export PLATFORM_SUB=$(echo "$PLATFORM" | sed 's|\/|\-|g')
           echo "PLATFORM_SUB=$PLATFORM_SUB" >> $GITHUB_ENV
-          if [[ "$REPO_BRANCH" == "snapshot" ]];then
-            export BRANCH_REL="snapshot"
-          else
-            export BRANCH_REL=$(echo "releases/$REPO_BRANCH")
-          fi
+          export BRANCH_REL=$(echo "releases/$REPO_BRANCH")
           echo "BRANCH_REL=$BRANCH_REL" >> $GITHUB_ENV
           export BUILD_CONFIG="$GITHUB_WORKSPACE/$CONFIG_FILE"
           echo "BUILD_CONFIG=$BUILD_CONFIG" >> $GITHUB_ENV
@@ -132,9 +99,9 @@ jobs:
           
           # Determine the target system (Imagebuilder files naming has changed since 23.05.0)
           if [[ "${REPO_BRANCH:0:2}" -ge "23" && "${REPO_BRANCH:3:2}" -ge "05" ]]; then
-              export REPO_SDK=$(echo "https://downloads.openwrt.org/${BRANCH_REL}/targets/${PLATFORM}/openwrt-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-12.3.0_musl.Linux-x86_64.tar.xz")
+              export REPO_SDK=$(echo "https://downloads.${SOURCE_WRT}.org/${BRANCH_REL}/targets/${PLATFORM}/openwrt-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-12.3.0_musl.Linux-x86_64.tar.xz")
           else
-              export REPO_SDK=$(echo "https://downloads.openwrt.org/${BRANCH_REL}/targets/${PLATFORM}/openwrt-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-11.2.0_musl.Linux-x86_64.tar.xz")
+              export REPO_SDK=$(echo "https://downloads.${SOURCE_WRT}.org/${BRANCH_REL}/targets/${PLATFORM}/openwrt-sdk-${REPO_BRANCH}-${PLATFORM_SUB}_gcc-11.2.0_musl.Linux-x86_64.tar.xz")
           fi
     
           echo "REPO_SDK=${REPO_SDK}" >> $GITHUB_ENV
@@ -142,7 +109,7 @@ jobs:
           wget ${REPO_SDK}
           tar xf *.tar.xz
           rm -f *.tar.xz
-          mv openwrt-* /workdir/openwrt
+          mv ${SOURCE_WRT}-* /workdir/openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
           export OPENWRT_ROOT_PATH="$GITHUB_WORKSPACE/openwrt"
           echo "OPENWRT_ROOT_PATH=$OPENWRT_ROOT_PATH" >> $GITHUB_ENV
@@ -182,19 +149,27 @@ jobs:
         id: compile
         if: steps.install_feeds.outputs.status == 'success' && !cancelled()
         run: |
-          [[ ! -d ipkg ]] && mkdir -p ipkg
           cd $OPENWRT_ROOT_PATH
           sed -i -e '/^#/d' -i -e '/^[[:blank:]]*$/ d' "${BUILD_CONFIG}"
           echo -e "===== List of Apps ====="
           cat $BUILD_CONFIG
-          echo -e "===== List of Apps ====="    
-          make defconfig   
+          echo -e "===== List of Apps ====="
+          make defconfig
           while IFS= read -r line # Read a line
           do
             make package/${line}/compile -j${nproc} V=w
             find bin/ -type f -name '*${line}*' -exec mv -t ../ipkg {} +
           done < "$BUILD_CONFIG"
+          echo "LUCIAPPPATH=$OPENWRT_ROOT_PATH/bin/packages/*/base/luci-app" >> $GITHUB_ENV
+          echo "PKGPATH=$OPENWRT_ROOT_PATH/bin/packages/*/base/" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Upload bin directory
+        uses: actions/upload-artifact@main
+        if: steps.compile.outputs.status == 'success' && !cancelled()
+        with:
+          name: OpenWrt_bin
+          path: openwrt/bin
 
       - name: Generate New Release Tag
         id: tag
@@ -209,16 +184,13 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: steps.tag.outputs.status == 'success' && !cancelled()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           prerelease: false
           name: IPK Build ${{ env.FILE_DATE }}
           tag_name: ${{ steps.tag.outputs.release_tag }}
           files: |
-            # ${{ env.LUCITHEMEPATH }}-*
-            # ${{ env.LUCIAPPPATH }}-*
-            # ${{ env.PKGPATH }}/mactoiface.*
-            ${{ env.paketHelmiWrt }}/*
+            ${{ env.LUCIAPPPATH }}-*
           body: |
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
             THESE PACKAGES IS COOLSNOWWOLF LEDE FIRMWARE BASED !!!!! NOT OFFICIAL OPENWRT BASE !!!!
