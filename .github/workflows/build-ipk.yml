@@ -177,19 +177,20 @@ jobs:
           touch release.txt
           echo "status=success" >> $GITHUB_OUTPUT
 
+
       - name: Upload HelmiWrt Packages to GitHub Release
-        uses: softprops/action-gh-release@v1
-        if: steps.tag.outputs.status == 'success' && !cancelled()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        uses: ncipollo/release-action@main
+        if: ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
         with:
-          prerelease: false
-          name: IPK Build ${{ env.FILE_DATE }} ${{ env.SOURCE_WRT }} ${{ env.REPO_BRANCH }} ${{ env.PLATFORM }}
-          tag_name: ${{ steps.tag.outputs.release_tag }}
-          files: |
-            ${{ env.LUCIAPPPATH }}-*
+          tag: ${{ env.SOURCE_WRT }}_${{ env.REPO_BRANCH }}_${{ env.PLATFORM }}
+          artifacts: ${{ env.LUCIAPPPATH }}-*
+          allowUpdates: true
+          removeArtifacts: false
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             **HelmiWrt LuCI App and Theme IPK for OpenWrt**
             THESE PACKAGES IS COOLSNOWWOLF LEDE FIRMWARE BASED !!!!! NOT OFFICIAL OPENWRT BASE !!!!
             DWYOR (DO WITH YOUR OWN RISK)
             [Donation here](https://www.helmiau.com/pay) • [Installation Tutorial](https://www.google.com/search?q=helmiau.com+helmiwrt+packages)
+            
