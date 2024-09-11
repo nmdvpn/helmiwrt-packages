@@ -12,13 +12,16 @@ pushd package
 # Add Argon theme configuration
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config
 
+# Add luci-app-tailscale
+git clone https://github.com/asvow/luci-app-tailscale package/luci-app-tailscale
+
 pip install github-dlr
 
 # Add official OpenClash dev branch source
 # git clone --depth=1 -b dev https://github.com/vernesong/OpenClash
 #svn co https://github.com/vernesong/OpenClash/tree/dev/luci-app-openclash luci-app-openclash
 #gh-dlr https://github.com/vernesong/OpenClash/tree/dev/luci-app-openclash
-git clone --depth=1 https://github.com/vernesong/OpenClash
+#git clone --depth=1 https://github.com/vernesong/OpenClash
 #pushd luci-app-openclash
 #git sparse-checkout set --no-cone luci-app-openclash
 #pushd luci-app-openclash/tools/po2lmo
@@ -28,26 +31,26 @@ git clone --depth=1 https://github.com/vernesong/OpenClash
 
 # Add modeminfo
 #svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo luci-app-modeminfo
-#gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-modeminfo
 #git clone --depth=1 https://github.com/koshev-msk/modemfeed
 
 #svn co https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo modeminfo
-#gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/packages/net/modeminfo
 # Remove modeminfo telegrambot plugin
 [[ -f modeminfo/Makefile ]] && sed -i -e '/Package\/\$(PKG_NAME)-telegram\/install/,+4d' -e '/Package\/\$(PKG_NAME)-telegram/,+6d' -e '/\$(eval \$(call BuildPackage,\$(PKG_NAME)-telegram))/,+0d' modeminfo/Makefile
 [[ -f modeminfo/root/usr/lib/telegrambot/plugins/modeminfo.sh ]] && rm -f modeminfo/root/usr/lib/telegrambot/plugins/modeminfo.sh
 
 # Add luci-app-smstools3
 #svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-smstools3 luci-app-smstools3
-#gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-smstools3
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-smstools3
 
 # Add luci-app-mmconfig : configure modem cellular bands via mmcli utility
 #svn co https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-mmconfig luci-app-mmconfig
-#gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-mmconfig
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/luci/applications/luci-app-mmconfig
 
 # Add support for Fibocom L860-GL l850/l860 ncm
 #svn co https://github.com/koshev-msk/modemfeed/tree/master/packages/net/xmm-modem xmm-modem
-#gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/packages/net/xmm-modem
+gh-dlr https://github.com/koshev-msk/modemfeed/tree/master/packages/net/xmm-modem
 
 if [[ $REPO_BRANCH == *"21."* ]] || [[ $REPO_BRANCH == *"22."* ]] || [[ $REPO_BRANCH == *"23."* ]]; then
 	echo "21.02 branch detected! Adding 21.02 repos..."
@@ -60,6 +63,7 @@ if [[ $REPO_BRANCH == *"21."* ]] || [[ $REPO_BRANCH == *"22."* ]] || [[ $REPO_BR
 	# Add luci-app-argon
 	echo "Adding jerrykuku/luci-app-argon for openwrt 2x.xx..."
 	git clone --depth=1 -b master https://github.com/jerrykuku/luci-app-argon
+	git clone --depth=1 -b master https://github.com/jerrykuku/luci-app-argon-config
 else
 	echo "18.06 branch detected! Adding 18.06 repos..."
 	# Add 3ginfo, luci-app-3ginfo
@@ -69,6 +73,7 @@ else
 	# Add luci-app-argon
 	echo "Adding jerrykuku/luci-app-argon for openwrt 2x.xx..."
 	git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-app-argon
+	git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-app-argon-config
 fi
 
 # Add luci-app-sms-tool
