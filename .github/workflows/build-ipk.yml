@@ -173,7 +173,7 @@ jobs:
         if: steps.compile.outputs.status == 'success' && !cancelled()
         run: |
           sleep 10
-          echo "release_tag=$PLATFORM" >> $GITHUB_OUTPUT
+          echo "release_tag=$PLATFORM_$REPO_BRANCH" >> $GITHUB_OUTPUT
           touch release.txt
           echo "status=success" >> $GITHUB_OUTPUT
 
@@ -182,7 +182,7 @@ jobs:
         uses: ncipollo/release-action@main
         if: ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
         with:
-          tag: ${{ env.SOURCE_WRT }}_${{ env.REPO_BRANCH }}_${{ env.PLATFORM }}
+          tag: ${{ env.SOURCE_WRT }}_${{ env.REPO_BRANCH }}
           artifacts: ${{ env.LUCIAPPPATH }}-*
           allowUpdates: true
           removeArtifacts: false
