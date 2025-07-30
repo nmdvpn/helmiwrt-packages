@@ -113,7 +113,7 @@ jobs:
           echo "REPO_SDK=${REPO_SDK}" >> $GITHUB_ENV
           echo "sdk url:: ${REPO_SDK}"
           wget ${REPO_SDK}
-          tar zf *.tar.zst
+          tar --zstd -xvf *.tar.zst
           tar xf *.tar.xz
           rm -f *.tar.xz
           mv ${SOURCE_WRT}-* /workdir/openwrt
