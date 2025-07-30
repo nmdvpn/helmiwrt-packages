@@ -114,7 +114,7 @@ jobs:
           echo "sdk url:: ${REPO_SDK}"
           wget ${REPO_SDK}
           tar xf *.tar.*
-          rm -f *.tar.xz
+          rm -f *.tar.*
           mv ${SOURCE_WRT}-* /workdir/openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
           export OPENWRT_ROOT_PATH="$GITHUB_WORKSPACE/openwrt"
