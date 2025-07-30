@@ -29,6 +29,7 @@ on:
         - 22.03.3
         - 23.05.3
         - 23.05.4
+        - 24.10.2
       platform:
         type: choice
         description: Select device platform.
@@ -56,7 +57,7 @@ env:
 
 jobs:
   Build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
